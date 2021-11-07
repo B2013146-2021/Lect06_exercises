@@ -1,0 +1,21 @@
+#!/usr/bin/bash
+# List the subject ID (identity) for all HSPs
+grep -v "#" blastoutput2.out | cut -f2 
+# List the alignment length and percent ID for all HSPs
+grep -v "#" blastoutput2.out | cut -f3,4 | more
+# change the order take the tab-separated 
+grep -v "#" blastoutput2.out | awk 'BEGIN {OFS="\t";}{print $4,$3;}'|more
+# Show the HSPs with more than 20 mismatches
+grep -v "#" blastoutput2.out | awk '($5 >20)' | more
+awk '($5 > 20 && $1 != "#")' blastoutput2.out | more
+# Show the HSPs shorter than 100 amino acids and with more than 20 mismatches
+awk '($4 <100 && $5 >20 && $1 != "#")' blastoutput2.out |more
+# List the first 20 HSPs that have fewer than 20 mismatches
+awk '($5 < 20 && $1 != "#")' blastoutput2.out | head -20
+# How many HSPs are shorter than 100 amino acids?
+awk '($4 < 100 && $1 != "#")' blastoutput2.out | wc -l
+# List the start positions of all matches where the HSP name includes the letters string "AEI".
+cut -f2,7 blastoutput2.out | grep "AEI" | cut -f2
+# What percentage of each HSP is made up of mismatches?
+grep -v "#" blastoutput2.out | awk '{hsp_mm_pc = ($5/$4)*100; print hsp_mm_pc;}' |more
+
